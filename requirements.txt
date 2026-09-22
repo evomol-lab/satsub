@@ -4,3 +4,9 @@ scipy>=1.11
 pandas>=2.0
 plotly>=5.20
 streamlit>=1.30
+
+# Installs this repo itself as the `satsub` package (editable mode), so
+# `import satsub...` works on hosts like Streamlit Community Cloud that
+# build from requirements.txt and then run `streamlit run satsub/app.py`
+# directly without a separate `pip install -e .` step.
+-e .

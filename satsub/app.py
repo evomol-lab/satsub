@@ -6,6 +6,21 @@ or, once installed:  satsub-gui
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+# Streamlit Community Cloud (and any other host that runs this file directly
+# via `streamlit run satsub/app.py`) only puts this file's own directory
+# (satsub/) on sys.path, not the repository root one level up - so the
+# `satsub` package containing this very file fails to import even though it
+# sits right there. `pip install -e .` (done for local dev) avoids this by
+# registering satsub as a real installed package, but hosts that just
+# `pip install -r requirements.txt` and run the script skip that step. Fix
+# it here so the app works regardless of how/where it's launched from.
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
 import pandas as pd
 import streamlit as st
 
