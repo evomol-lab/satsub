@@ -660,5 +660,15 @@ analysis clearly differentiates highly and lowly expressed genes. *Nucleic
 Acids Res* 14:5125–5143.
 - Cleveland WS (1979). Robust locally weighted regression and smoothing
 scatterplots. *J Am Stat Assoc* 74:829–836.
+
+#### Disclosure on Generative AI Use
+
+The developer team used generative AI tools for the following tasks. Throughout this process, the authors maintained full control over the research design and interpretation of results; the AI acted solely as a technical and linguistic aid.
+
+- Code writing, revision, and optimization.
+
+- Elaborate documentation topic structure.
+
+- Review english language.
         """
     )

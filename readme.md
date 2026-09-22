@@ -167,3 +167,13 @@ runtime dependency SatSub uses: Biopython (Biopython License Agreement, a
 BSD-3-Clause-equivalent permissive license), NumPy, SciPy and pandas
 (BSD-3-Clause), Plotly (MIT), and Streamlit (Apache-2.0) — none of these
 impose copyleft/share-alike terms, so there is no license conflict.
+
+## Disclosure on Generative AI Use
+
+The developer team used generative AI tools for the following tasks. Throughout this process, the authors maintained full control over the research design and interpretation of results; the AI acted solely as a technical and linguistic aid.
+
+- Code writing, revision, and optimization.
+
+- Elaborate documentation topic structure.
+
+- Review english language.
