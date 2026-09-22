@@ -51,6 +51,23 @@ def _style_axes(fig: go.Figure) -> None:
     fig.update_yaxes(showgrid=True, gridcolor=GRIDLINE, zeroline=False, linecolor=BASELINE, tickfont=dict(color=MUTED_INK))
 
 
+def _linear_trend(x, y) -> tuple[np.ndarray, np.ndarray] | None:
+    """Ordinary-least-squares trend line through (x, y).
+
+    Returns two endpoints spanning the observed x-range, or None when there
+    are too few points (<2) or all x-values are identical (no defined slope).
+    """
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    mask = ~(np.isnan(x) | np.isnan(y))
+    x, y = x[mask], y[mask]
+    if x.size < 2 or np.ptp(x) == 0:
+        return None
+    slope, intercept = np.polyfit(x, y, 1)
+    x_line = np.array([x.min(), x.max()])
+    return x_line, slope * x_line + intercept
+
+
 def saturation_scatter(
     df: pd.DataFrame,
     distance_col: str,
@@ -71,32 +88,39 @@ def saturation_scatter(
     )
 
     fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(
-            x=valid[distance_col],
-            y=valid["Ps"],
-            mode="markers",
-            name="Transitions (s)",
-            marker=dict(color=BLUE, size=9, line=dict(color=SURFACE, width=1)),
-            customdata=np.stack(
-                [valid["seq1"], valid["seq2"], np.full(len(valid), "s (transitions)")], axis=-1
-            ),
-            hovertemplate=hover,
+
+    def _add_series(y_col: str, color: str, series_name: str) -> None:
+        trend = _linear_trend(valid[distance_col], valid[y_col])
+        if trend is not None:
+            x_line, y_line = trend
+            fig.add_trace(
+                go.Scatter(
+                    x=x_line,
+                    y=y_line,
+                    mode="lines",
+                    line=dict(color=color, width=2, dash="dash"),
+                    name=f"{series_name} trend",
+                    showlegend=False,
+                    hoverinfo="skip",
+                )
+            )
+        fig.add_trace(
+            go.Scatter(
+                x=valid[distance_col],
+                y=valid[y_col],
+                mode="markers",
+                name=series_name,
+                marker=dict(color=color, size=9, line=dict(color=SURFACE, width=1)),
+                customdata=np.stack(
+                    [valid["seq1"], valid["seq2"], np.full(len(valid), series_name)], axis=-1
+                ),
+                hovertemplate=hover,
+            )
         )
-    )
-    fig.add_trace(
-        go.Scatter(
-            x=valid[distance_col],
-            y=valid["Pv"],
-            mode="markers",
-            name="Transversions (v)",
-            marker=dict(color=ORANGE, size=9, line=dict(color=SURFACE, width=1)),
-            customdata=np.stack(
-                [valid["seq1"], valid["seq2"], np.full(len(valid), "v (transversions)")], axis=-1
-            ),
-            hovertemplate=hover,
-        )
-    )
+
+    _add_series("Ps", BLUE, "Transitions (s)")
+    _add_series("Pv", ORANGE, "Transversions (v)")
+
     fig.update_layout(
         title=title,
         xaxis_title=f"Genetic distance ({distance_label})",
