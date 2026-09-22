@@ -51,21 +51,47 @@ def _style_axes(fig: go.Figure) -> None:
     fig.update_yaxes(showgrid=True, gridcolor=GRIDLINE, zeroline=False, linecolor=BASELINE, tickfont=dict(color=MUTED_INK))
 
 
-def _linear_trend(x, y) -> tuple[np.ndarray, np.ndarray] | None:
-    """Ordinary-least-squares trend line through (x, y).
+def _lowess(x, y, frac: float = 0.6667) -> tuple[np.ndarray, np.ndarray] | None:
+    """Locally weighted scatterplot smoothing (LOWESS): a degree-1 local
+    regression at each observed x, weighted by a tricube kernel over its
+    nearest neighbors.
 
-    Returns two endpoints spanning the observed x-range, or None when there
-    are too few points (<2) or all x-values are identical (no defined slope).
+    Unlike a single straight-line fit, this can bend and flatten, which is
+    what a saturation plot needs to show: points tracking distance linearly
+    versus points plateauing as multiple/back substitutions erase signal.
+
+    Returns (x_sorted, y_smoothed) evaluated at every valid observation, or
+    None when there are too few points (<4) or all x-values are identical.
     """
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
     mask = ~(np.isnan(x) | np.isnan(y))
     x, y = x[mask], y[mask]
-    if x.size < 2 or np.ptp(x) == 0:
+    n = x.size
+    if n < 4 or np.ptp(x) == 0:
         return None
-    slope, intercept = np.polyfit(x, y, 1)
-    x_line = np.array([x.min(), x.max()])
-    return x_line, slope * x_line + intercept
+
+    order = np.argsort(x)
+    xs, ys = x[order], y[order]
+    k = int(np.clip(np.ceil(frac * n), 3, n))
+    design = np.column_stack([np.ones(n), xs])
+
+    y_smooth = np.empty(n)
+    for i in range(n):
+        dist = np.abs(xs - xs[i])
+        h = np.partition(dist, k - 1)[k - 1]
+        if h <= 0:
+            h = np.finfo(float).eps
+        w = np.clip(1 - np.clip(dist / h, 0, 1) ** 3, 0, None) ** 3  # tricube weights
+        wx = design * w[:, None]
+        try:
+            beta, *_ = np.linalg.lstsq(wx.T @ design, wx.T @ ys, rcond=None)
+        except np.linalg.LinAlgError:
+            y_smooth[i] = ys[i]
+            continue
+        y_smooth[i] = beta[0] + beta[1] * xs[i]
+
+    return xs, y_smooth
 
 
 def saturation_scatter(
@@ -90,7 +116,7 @@ def saturation_scatter(
     fig = go.Figure()
 
     def _add_series(y_col: str, color: str, series_name: str) -> None:
-        trend = _linear_trend(valid[distance_col], valid[y_col])
+        trend = _lowess(valid[distance_col], valid[y_col])
         if trend is not None:
             x_line, y_line = trend
             fig.add_trace(
@@ -98,7 +124,7 @@ def saturation_scatter(
                     x=x_line,
                     y=y_line,
                     mode="lines",
-                    line=dict(color=color, width=2, dash="dash"),
+                    line=dict(color=color, width=2, dash="dash", shape="spline", smoothing=0.6),
                     name=f"{series_name} trend",
                     showlegend=False,
                     hoverinfo="skip",
