@@ -1,0 +1,32 @@
+[project]
+name = "satsub"
+version = "0.1.0"
+description = "SatSub: multiple sequence alignment statistics and nucleotide substitution saturation analysis"
+readme = "readme.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "jpmslima" }]
+dependencies = [
+    "biopython>=1.83",
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pandas>=2.0",
+    "plotly>=5.20",
+    "streamlit>=1.30",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+satsub-gui = "satsub.launch:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["satsub*"]
+
+[tool.setuptools.package-data]
+satsub = ["example_data/*.fas"]
