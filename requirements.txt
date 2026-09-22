@@ -5,8 +5,11 @@ pandas>=2.0
 plotly>=5.20
 streamlit>=1.30
 
-# Installs this repo itself as the `satsub` package (editable mode), so
-# `import satsub...` works on hosts like Streamlit Community Cloud that
-# build from requirements.txt and then run `streamlit run satsub/app.py`
-# directly without a separate `pip install -e .` step.
--e .
+# Deliberately NOT `-e .` here: hosts like Streamlit Community Cloud only
+# re-run `pip install` when this file's contents change, so an editable
+# install of the local package can end up pinned to a stale build while
+# app.py itself (read fresh from git on every run) moves ahead - a
+# mismatch that surfaces as ImportError for anything added after that
+# stale install. satsub/app.py instead inserts the repo root onto
+# sys.path directly at import time, which always reflects the current
+# checkout with no separate install step and nothing to go stale.
