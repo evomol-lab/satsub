@@ -128,7 +128,7 @@ constraint and its base composition drifts more freely than positions
 1 and 2, which more often change the encoded amino acid and are kept
 in check by selection.
 
-![Nucleotide Frequency](satsub/assets/Nucleotide-freq2.png)
+![Nucleotide Frequency](satsub/assets/Nucleotide-freq-2.png)
 
 ### Codon usage and RSCU
 

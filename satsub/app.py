@@ -24,7 +24,7 @@ if str(_REPO_ROOT) not in sys.path:
 import pandas as pd
 import streamlit as st
 
-from satsub.branding import LAB_NAME, LAB_URL, LOGO_PATH
+from satsub.branding import LAB_NAME, LAB_URL, LOGO_PATH, SATSUB_LOGO_PATH
 from satsub.composition import (
     codon_usage_table,
     directional_pair_frequencies,
@@ -242,6 +242,8 @@ st.sidebar.caption(f"[{LAB_URL.removeprefix('https://')}]({LAB_URL})")
 # Main area
 # --------------------------------------------------------------------------
 
+if SATSUB_LOGO_PATH.exists():
+    st.image(str(SATSUB_LOGO_PATH), width=380)
 st.title("SatSub's Dashboard")
 st.write("*This tool was developed for teaching puporses only. For research datasets use it at your own risk!*")
 

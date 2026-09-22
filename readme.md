@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="satsub/assets/satsub-logo.png" alt="SatSub logo" width="500">
+</p>
+
 # Estimator of the substitution saturation rates (SatSub)
 
 ## Introduction

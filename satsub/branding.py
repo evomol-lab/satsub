@@ -7,3 +7,5 @@ from pathlib import Path
 LOGO_PATH = Path(__file__).parent / "assets" / "Evomol-new.png"
 LAB_NAME = "EvoMol Lab"
 LAB_URL = "https://evomol-lab.imd.ufrn.br"
+
+SATSUB_LOGO_PATH = Path(__file__).parent / "assets" / "satsub-logo.png"
