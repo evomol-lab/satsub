@@ -33,9 +33,23 @@ more — to help you understand your dataset before downstream analysis.
   - **TN93** — Tamura & Nei (1993)
   - **GTR** — general time-reversible (rates estimated once per alignment/subset,
     then a per-pair maximum-likelihood distance under the fixed rate matrix)
-- s and v vs. genetic distance saturation plots for each model
+- s and v vs. genetic distance saturation plots for each model, each with a
+  LOWESS-smoothed trend line per series so a plateauing (saturating) trend is
+  visible rather than forced onto a straight line
 - The same analysis split by codon position (1st, 2nd, 3rd), with a
   configurable reading-frame start
+
+**Composition & codon usage (nucleotide)**
+- Nucleotide (T/C/A/G) frequencies per sequence, overall and at each codon
+  position, with a grouped bar chart of the cross-sequence mean
+- Codon usage: mean codon count per sequence and relative synonymous codon
+  usage (RSCU) for all 64 codons under a chosen NCBI genetic code table,
+  shown as a usage bar chart and an RSCU chart colored on a diverging scale
+  centered at 1.0 (equal usage within a synonymous family)
+- Directional base-pair frequencies: identical/transition/transversion pair
+  counts averaged per sequence comparison (ii, si, sv, R = si/sv), plus the
+  full 4×4 directional substitution matrix as a heatmap, for all sites and
+  for each codon position
 
 **Interface**
 - A Streamlit GUI: file upload, a bundled example dataset (8 vertebrate COI
@@ -67,9 +81,11 @@ This opens the app in your browser (default: http://localhost:8501). Use the
 sidebar to upload a nucleotide alignment (FASTA, Clustal, Phylip, Nexus or
 Stockholm), or click "Use bundled example" to try it immediately with the
 included 8-taxon vertebrate COI dataset (`VertCOI.fas`). An amino-acid
-alignment can either be translated from the nucleotide alignment (pick the
-matching genetic code table, e.g. table 2 for vertebrate mitochondrial genes
-such as COI) or uploaded separately.
+alignment can either be translated from the nucleotide alignment or
+uploaded separately. The sidebar's genetic code table (e.g. table 2 for
+vertebrate mitochondrial genes such as COI) is a single shared choice: it
+drives both that translation and the codon usage/RSCU calculation in the
+Composition & codon usage tab, so the two are always consistent.
 
 ## Running the tests
 
@@ -86,6 +102,7 @@ satsub/
   distances.py   # JC69 / K80 / TN93 / GTR pairwise distance estimators
   stats_nt.py    # nucleotide MSA statistics
   stats_aa.py    # amino-acid MSA statistics
+  composition.py # nucleotide frequencies, codon usage/RSCU, directional pair frequencies
   saturation.py  # pairwise s/v + distance tables, per codon position
   plotting.py    # Plotly figure builders
   app.py         # Streamlit GUI
@@ -114,3 +131,39 @@ Codon position is assigned from alignment-column index and the chosen
 reading-frame start only; it is not re-derived around indels, so alignments
 with frameshifting gaps will have codon positions shift for all downstream
 columns. Use a codon-aware alignment for such data.
+
+Codon usage frequencies are the mean raw codon count per sequence, averaged
+across taxa (not a per-mille rate), matching the classic per-taxon-averaged
+codon usage report. RSCU (Sharp, Tuohy & Mosurski, 1986) is then derived
+from that averaged table: each codon's mean count divided by the average
+count of its synonymous family under the selected genetic code, so 1.0 is
+the value expected if every synonym were used equally.
+
+Directional base-pair frequencies pool substitution counts across every
+sequence pair and divide by the number of pairs. Pooling over unordered
+pairs has no natural direction, so SatSub fixes one convention throughout:
+the row is the base in whichever sequence is listed earlier in the
+alignment, the column is the base in the later one. This is an arbitrary
+but consistent labeling, not a claim about ancestral state or direction of
+change.
+
+Saturation-plot trend lines use LOWESS (Cleveland, 1979), a local weighted
+regression, rather than a single straight-line fit, so a plateauing trend
+shows up as a visible bend instead of being averaged into a straight slope.
+
+## License
+
+SatSub is released under the [MIT License](LICENSE), by the
+[EvoMol Lab](https://evomol-lab.imd.ufrn.br). It is free to use, modify,
+and redistribute, including for commercial purposes, provided the copyright
+notice and license text are preserved.
+
+MIT matches the convention for bioinformatics tooling (Biopython,
+scikit-bio, DendroPy and most of the scientific Python stack use MIT or
+BSD) and is OSI-approved, which matters for inclusion in package
+ecosystems such as Bioconda/conda-forge and Debian Med that filter or
+hesitate on non-OSI-approved licenses. It is also compatible with every
+runtime dependency SatSub uses: Biopython (Biopython License Agreement, a
+BSD-3-Clause-equivalent permissive license), NumPy, SciPy and pandas
+(BSD-3-Clause), Plotly (MIT), and Streamlit (Apache-2.0) — none of these
+impose copyleft/share-alike terms, so there is no license conflict.

@@ -158,20 +158,53 @@ def saturation_scatter(
     return fig, n_dropped
 
 
-def identity_heatmap(matrix: pd.DataFrame, title: str = "Pairwise identity (%)") -> go.Figure:
+def generic_heatmap(
+    matrix: pd.DataFrame,
+    title: str,
+    colorbar_title: str = "Value",
+    value_label: str = "Value",
+    value_format: str = ".2f",
+    value_suffix: str = "",
+    row_label: str = "%{y}",
+    col_label: str = "%{x}",
+) -> go.Figure:
+    """Sequential-blue heatmap for any square/rectangular magnitude matrix
+    (pairwise identity, directional base-pair counts, etc.)."""
     fig = go.Figure(
         data=go.Heatmap(
             z=matrix.values,
             x=list(matrix.columns),
             y=list(matrix.index),
             colorscale=SEQUENTIAL_BLUE,
-            colorbar=dict(title="% identity"),
-            hovertemplate="%{y} vs %{x}<br>Identity: %{z:.2f}%<extra></extra>",
+            colorbar=dict(title=colorbar_title),
+            hovertemplate=(
+                f"{row_label} → {col_label}<br>{value_label}: %{{z:{value_format}}}{value_suffix}<extra></extra>"
+            ),
         )
     )
     fig.update_layout(title=title, **_BASE_LAYOUT)
     fig.update_yaxes(autorange="reversed")
     return fig
+
+
+def identity_heatmap(matrix: pd.DataFrame, title: str = "Pairwise identity (%)") -> go.Figure:
+    return generic_heatmap(
+        matrix, title, colorbar_title="% identity", value_label="Identity", value_format=".2f", value_suffix="%"
+    )
+
+
+def directional_pair_heatmap(matrix: pd.DataFrame, title: str) -> go.Figure:
+    """Heatmap of averaged directional base-pair counts: row = base in the
+    earlier-listed sequence of each pair, column = base in the later one."""
+    return generic_heatmap(
+        matrix,
+        title,
+        colorbar_title="Mean count / pair",
+        value_label="Mean count",
+        value_format=".1f",
+        row_label="row (earlier seq) %{y}",
+        col_label="col (later seq) %{x}",
+    )
 
 
 def categorical_bar(categories: list[str], values: list[float], title: str, y_title: str) -> go.Figure:
@@ -187,6 +220,71 @@ def categorical_bar(categories: list[str], values: list[float], title: str, y_ti
         )
     )
     fig.update_layout(title=title, yaxis_title=y_title, showlegend=False, **_BASE_LAYOUT)
+    _style_axes(fig)
+    return fig
+
+
+def grouped_bar_by_base(
+    x_categories: list[str], series: dict, title: str, y_title: str
+) -> go.Figure:
+    """Grouped bar chart for base-composition data split by an x-axis
+    category (e.g. codon position). `series` maps a base letter (A/C/G/T)
+    to a list of values aligned with `x_categories`; base colors follow the
+    same fixed A/C/G/T -> categorical-slot mapping used elsewhere."""
+    fig = go.Figure()
+    for i, base in enumerate("ACGT"):
+        if base not in series:
+            continue
+        fig.add_trace(
+            go.Bar(
+                x=x_categories,
+                y=series[base],
+                name=base,
+                marker=dict(color=CATEGORICAL_ORDER[i]),
+                hovertemplate=f"{base} - " + "%{x}: %{y:.2f}<extra></extra>",
+            )
+        )
+    fig.update_layout(
+        title=title,
+        yaxis_title=y_title,
+        barmode="group",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
+        **_BASE_LAYOUT,
+    )
+    _style_axes(fig)
+    return fig
+
+
+def rscu_diverging_bar(df: pd.DataFrame, title: str = "Relative synonymous codon usage (RSCU)") -> go.Figure:
+    """RSCU bar chart, one bar per codon (grouped by amino acid, in the
+    order given), colored on a blue<->red diverging scale centered at 1.0
+    (the value expected under equal usage within a synonymous family)."""
+    labels = [f"{row.codon} ({row.amino_acid})" for row in df.itertuples()]
+    diverging_scale = [
+        [0.0, "#0d366b"],
+        [0.25, "#3987e5"],
+        [0.5, "#f0efec"],
+        [0.75, "#e88f8f"],
+        [1.0, "#7a1f1f"],
+    ]
+    fig = go.Figure(
+        data=go.Bar(
+            x=labels,
+            y=df["rscu"],
+            marker=dict(
+                color=df["rscu"],
+                colorscale=diverging_scale,
+                cmid=1.0,
+                colorbar=dict(title="RSCU"),
+                line=dict(color=SURFACE, width=0.5),
+            ),
+            customdata=df["count_avg"],
+            hovertemplate="%{x}<br>RSCU: %{y:.2f}<br>Mean count: %{customdata:.1f}<extra></extra>",
+        )
+    )
+    fig.add_hline(y=1.0, line=dict(color=MUTED_INK, width=1, dash="dot"))
+    fig.update_layout(title=title, yaxis_title="RSCU", height=480, **_BASE_LAYOUT)
+    fig.update_xaxes(tickangle=-90, tickfont=dict(size=9))
     _style_axes(fig)
     return fig
 
