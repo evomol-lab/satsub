@@ -242,7 +242,7 @@ st.sidebar.caption(f"[{LAB_URL.removeprefix('https://')}]({LAB_URL})")
 # Main area
 # --------------------------------------------------------------------------
 
-st.title("SatSub: MSA statistics & substitution saturation")
+st.title("SatSub's Dashboard")
 st.write("*This tool was developed for teaching puporses only. For research datasets use it at your own risk!*")
 
 tab_overview, tab_nt, tab_comp, tab_aa, tab_sat, tab_about = st.tabs(
