@@ -75,7 +75,7 @@ RNA note.
 Open the **Nucleotide statistics** tab. This is the "know your data"
 tab — read it before trusting any downstream analysis.
 
-![Nucleotide statistics](assets/Nucleotide1.png)
+![Nucleotide statistics](satsub/assets/Nucleotide1.png)
 
 **Summary row.** For this dataset you should see 8 sequences, an
 alignment length of 1,509, an overall GC content around **45%**, and
@@ -104,7 +104,7 @@ see.
 with a CSV download button if you want to take it further in a
 spreadsheet or R/Python.
 
-![Nucleotide table](assets/Nucleotide-table.png)
+![Nucleotide table](satsub/assets/Nucleotide-table.png)
 
 ---
 
@@ -116,7 +116,7 @@ gene.
 
 ### Nucleotide frequencies by codon position
 
-![Nucleotide Frequency](assets/Nucleotide-Freq1.png)
+![Nucleotide Frequency](satsub/assets/Nucleotide-Freq1.png)
 
 Look at the grouped bar chart: GC content is not the same at every
 codon position. In this dataset, GC1 (1st position) is around **51%**,
@@ -128,11 +128,11 @@ constraint and its base composition drifts more freely than positions
 1 and 2, which more often change the encoded amino acid and are kept
 in check by selection.
 
-![Nucleotide Frequency](assets/Nucleotide-freq2.png)
+![Nucleotide Frequency](satsub/assets/Nucleotide-freq2.png)
 
 ### Codon usage and RSCU
 
-![Codon Usage](assets/CodonUsage.png)
+![Codon Usage](satsub/assets/CodonUsage.png)
 
 Set the **genetic code table** in the sidebar to **2 — Vertebrate
 Mitochondrial**. This matters: COI is a mitochondrial gene, and the
@@ -155,11 +155,11 @@ bluer) easy to spot at a glance. For example, in this dataset UUU
 these sequences consistently prefer UUC over UUU, a real and typical
 codon-usage bias, not a fluke of one sequence.
 
-![RSCU](assets/relative-synonymous-codon-usage-rscu.png)
+![RSCU](satsub/assets/relative-synonymous-codon-usage-rscu.png)
 
 ### Directional base-pair frequencies
 
-![Directional Base-Pair](assets/Directional.png)
+![Directional Base-Pair](satsub/assets/Directional.png)
 
 The summary table breaks every pairwise sequence comparison into
 identical (**ii**), transition (**si**), and transversion (**sv**)
@@ -181,7 +181,7 @@ nucleotide alignment" and the genetic code on table 2, open the
 **Amino-acid statistics** tab. Translating collapses the 1,509-nucleotide
 alignment down to 503 amino acid positions.
 
-![Amino-acid statistics](assets/AA1.png)
+![Amino-acid statistics](satsub/assets/AA1.png)
 
 Compare the numbers here to the nucleotide tab: mean pairwise identity
 jumps from about 78% (nucleotide) to about **90%** (amino acid), and
@@ -193,13 +193,13 @@ far more conserved than the DNA sequence underneath it. Of 503 amino
 acid sites, only 60 are parsimony-informative — compare that to 472 at
 the nucleotide level.
 
-![Amino-acid statistics](assets/AA2.png)
+![Amino-acid statistics](satsub/assets/AA2.png)
 
 ---
 
 ## 5. Substitution saturation tab — the main event
 
-![Substitution saturation](assets/SatSub-plots.png)
+![Substitution saturation](satsub/assets/SatSub-plots.png)
 
 This is what SatSub was built for. Substitution saturation happens when
 sequences have diverged for so long that new substitutions start
