@@ -6,7 +6,7 @@
 
 ## Introduction
 
-SatSub is a Python-based tool for estimating substitution saturation rates in
+[SatSub](https://satsub.streamlit.app) is a Python-based tool for estimating substitution saturation rates in
 coding and non-coding nucleotide sequences, with a browser-based graphical
 interface (built with Streamlit). It gives you a fast, visual estimate of
 substitution saturation, helping you identify the most appropriate model of
@@ -59,7 +59,9 @@ more — to help you understand your dataset before downstream analysis.
 
 **Interface**
 - A Streamlit GUI: file upload, a bundled example dataset (8 vertebrate COI
-  sequences), interactive Plotly charts, and CSV export for every table
+  sequences), interactive Plotly charts, and CSV export for every table.
+
+SatSub can be executed from the following link: https://satsub.streamlit.app/
 
 ## Installation
 
