@@ -12,6 +12,8 @@ alignments (MSAs) — GC content, base/amino-acid composition, gap percentage,
 pairwise identity, conserved/variable/parsimony-informative site counts, and
 more — to help you understand your dataset before downstream analysis.
 
+>*This tool was developed for teaching puporses only. For research datasets use it at your own risk!*
+
 ## Features
 
 **Alignment statistics (nucleotide and amino acid)**
@@ -86,6 +88,10 @@ uploaded separately. The sidebar's genetic code table (e.g. table 2 for
 vertebrate mitochondrial genes such as COI) is a single shared choice: it
 drives both that translation and the codon usage/RSCU calculation in the
 Composition & codon usage tab, so the two are always consistent.
+
+New to SatSub? [`TUTORIAL.md`](TUTORIAL.md) is a guided, hands-on walkthrough
+of every tab using this same bundled example dataset, ending with a worked
+example of spotting substitution saturation at the 3rd codon position.
 
 ## Running the tests
 
