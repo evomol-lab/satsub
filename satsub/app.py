@@ -646,19 +646,19 @@ code was used.
 
 #### References
 
-Jukes TH & Cantor CR (1969). *Evolution of Protein Molecules.* In Mammalian
+- Jukes TH & Cantor CR (1969). *Evolution of Protein Molecules.* In Mammalian
 Protein Metabolism, 21–32.
-Kimura M (1980). A simple method for estimating evolutionary rates of base
+- Kimura M (1980). A simple method for estimating evolutionary rates of base
 substitutions. *J Mol Evol* 16:111–120.
-Tamura K & Nei M (1993). Estimation of the number of nucleotide
+- Tamura K & Nei M (1993). Estimation of the number of nucleotide
 substitutions in the control region of mitochondrial DNA in humans and
 chimpanzees. *Mol Biol Evol* 10:512–526.
-Tavaré S (1986). Some probabilistic and statistical problems in the
+- Tavaré S (1986). Some probabilistic and statistical problems in the
 analysis of DNA sequences. *Lect Math Life Sci* 17:57–86.
-Sharp PM, Tuohy TM & Mosurski KR (1986). Codon usage in yeast: cluster
+- Sharp PM, Tuohy TM & Mosurski KR (1986). Codon usage in yeast: cluster
 analysis clearly differentiates highly and lowly expressed genes. *Nucleic
 Acids Res* 14:5125–5143.
-Cleveland WS (1979). Robust locally weighted regression and smoothing
+- Cleveland WS (1979). Robust locally weighted regression and smoothing
 scatterplots. *J Am Stat Assoc* 74:829–836.
         """
     )
